@@ -16,6 +16,7 @@ import {
   Container,
   Form
 } from './styles';
+import { useEffect } from 'react';
 
 interface FormData {
   service_name: string;
@@ -49,6 +50,17 @@ export function RegisterLoginData() {
 
     const dataKey = '@savepass:logins';
 
+    const storageData = await AsyncStorage.getItem(dataKey)
+
+    let data = []
+
+    if (storageData) {
+      data = JSON.parse(storageData)
+    }
+
+    await AsyncStorage.setItem(dataKey, JSON.stringify([ ...data, newLoginData ]))
+
+    navigate('Home')
     // Save data on AsyncStorage and navigate to 'Home' screen
   }
 
@@ -65,10 +77,7 @@ export function RegisterLoginData() {
             testID="service-name-input"
             title="Nome do serviço"
             name="service_name"
-            error={
-              // Replace here with real content
-              'Has error ? show error message'
-            }
+            error={errors.service_name?.message}
             control={control}
             autoCapitalize="sentences"
             autoCorrect
@@ -77,10 +86,7 @@ export function RegisterLoginData() {
             testID="email-input"
             title="E-mail"
             name="email"
-            error={
-              // Replace here with real content
-              'Has error ? show error message'
-            }
+            error={errors.email?.message}
             control={control}
             autoCorrect={false}
             autoCapitalize="none"
@@ -90,10 +96,7 @@ export function RegisterLoginData() {
             testID="password-input"
             title="Senha"
             name="password"
-            error={
-              // Replace here with real content
-              'Has error ? show error message'
-            }
+            error={errors.password?.message}
             control={control}
             secureTextEntry
           />
